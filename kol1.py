@@ -13,3 +13,25 @@
 #Do your best, show off with good, clean, well structured code - this is more important than number of features.
 #After you finish, be sure to UPLOAD this (add, commit, push) to the remote repository.
 #Good Luck
+
+
+#!/usr/bin/env python2
+import random
+import time
+
+mu = 0.0	#mean gaussian distribution
+sigma = 1.0	#sigma gaussian distribution
+correction = 2	#correction step of tilt
+angle = 0	#tilt value
+
+print("Starting simulation")
+
+while True:
+	angle += random.gauss(mu, sigma)		#generate turbulance
+	print("Current angle: {:.4f}".format(angle))
+	if angle < 0:							#applied correction
+		angle += correction
+	else:
+		angle -= correction
+	print("After angle correction: {:.4f}\n".format(angle))
+	time.sleep(1)
