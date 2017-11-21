@@ -19,19 +19,49 @@
 import random
 import time
 
-mu = 0.0	#mean gaussian distribution
-sigma = 1.0	#sigma gaussian distribution
-correction = 2	#correction step of tilt
-angle = 0	#tilt value
+class Plane:
+	def __init__(self, start_angle, tilt_correction_step):
+		self.angle = start_angle
+		self.tilt_correction_step = tilt_correction_step
+	def get_actual_angle(self):
+		return self.angle
+	def add_turbulence(self, turbulence):
+		self.angle += turbulence
+	def apply_tilt_correction(self):
+		if self.angle < 0:
+			self.angle += self.tilt_correction_step
+		else:
+			self.angle -= self.tilt_correction_step
+	def change_tilt_correction_step(self, new_tilt_correction_step):
+		self.tilt_correction_step = new_tilt_correction_step
+	
+class Turbulence:
+	def __init__(self, gaussian_distribution_mean, gaussian_distribution_sigma):
+		self.gaussian_distribution_mean = gaussian_distribution_mean
+		self.gaussian_distribution_sigma = gaussian_distribution_sigma
+	def generate_turbulance(self):
+		return random.gauss(self.gaussian_distribution_mean, self.gaussian_distribution_sigma)
+	def get_gaussian_distribution_mean(self):
+		return self.gaussian_distribution_mean
+	def change_gaussian_distribution_mean(self, new_gaussian_distribution_mean):
+		self.gaussian_distribution_mean = new_gaussian_distribution_mean
+	def get_gaussian_distribution_sigma(self):
+		return self.gaussian_distribution_sigma
+	def change_gaussian_distribution_sigma(self, new_gaussian_distribution_sigma):
+		self.gaussian_distribution_sigma = new_gaussian_distribution_sigma
+		
+if __name__ == "__main__":
 
-print("Starting simulation")
+	print("--------------------------")
+	print("| Starting simulation... |\n| Press 'Ctrl+C' to exit |")
+	print("--------------------------\n")
+	
+	plane = Plane(0,2)
+	turbulance = Turbulence(0.0, 1.0)
 
-while True:
-	angle += random.gauss(mu, sigma)		#generate turbulance
-	print("Current angle: {:.4f}".format(angle))
-	if angle < 0:							#applied correction
-		angle += correction
-	else:
-		angle -= correction
-	print("After angle correction: {:.4f}\n".format(angle))
-	time.sleep(1)
+	while True:
+		plane.add_turbulence(turbulance.generate_turbulance())
+		print("Current angle: {:.4f}".format(plane.get_actual_angle()))
+		plane.apply_tilt_correction()
+		print("After angle correction: {:.4f}\n".format(plane.get_actual_angle()))
+		time.sleep(1)
